@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>支付頁面</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .container {
+      margin-top: 50px;
+    }
+    input[type="text"], input[type="number"], input[type="submit"] {
+      padding: 10px;
+      margin: 10px;
+      width: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>付款頁面</h1>
+    <form id="paymentForm">
+      <label for="name">姓名：</label>
+      <input type="text" id="name" name="name" placeholder="可選填" /><br />
+      
+      <label for="phone">電話：</label>
+      <input type="text" id="phone" name="phone" required /><br />
+
+      <label for="amount">金額：</label>
+      <input type="number" id="amount" name="amount" required /><br />
+      
+      <label for="paymentMethod">選擇付款方式：</label>
+      <select id="paymentMethod" name="paymentMethod">
+        <option value="credit_card">信用卡付款</option>
+        <option value="convenience_store">超商代碼</option>
+      </select><br />
+
+      <input type="submit" value="送出付款" />
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // 這裡會呼叫你的付款 API（目前為假設的步驟）
+      alert('付款資訊已送出');
+    });
+  </script>
+</body>
+</html>
