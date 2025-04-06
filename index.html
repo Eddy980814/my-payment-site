@@ -49,23 +49,16 @@
 
   <script>
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
-      e.preventDefault();  // 防止表單自動提交，手動處理
+      e.preventDefault();
 
-      // 取得表單資料
+      // 获取表单数据
       var name = document.getElementById('name').value;
       var phone = document.getElementById('phone').value;
       var amount = document.getElementById('amount').value;
       var productName = document.getElementById('productName').value;
       var paymentMethod = document.getElementById('paymentMethod').value;
 
-      // 輸出資料檢查
-      console.log('姓名:', name);
-      console.log('電話:', phone);
-      console.log('金額:', amount);
-      console.log('商品名稱:', productName);
-      console.log('付款方式:', paymentMethod);
-
-      // 綠界API所需的參數
+      // 设置绿界金流 API 的必要参数
       var merchantID = "3385709"; // 你的商店代號
       var hashKey = "M2eixosZGgDsvKs6"; // 你的 HashKey
       var hashIV = "PmvnnKAnisf7Gtv8"; // 你的 HashIV
@@ -75,14 +68,14 @@
         Amt: amount,
         Name: name,
         Phone: phone,
-        ProductName: productName, // 新增商品名稱參數
+        ProductName: productName,  // 新增商品名稱參數
         PaymentMethod: paymentMethod,
         HashKey: hashKey,
         HashIV: hashIV
       };
 
-      // 這裡會觸發API請求，請先確保URL正確
-      fetch("https://api.ecpay.com.tw/payment/checkout", {
+      // 使用 fetch 發送到綠界金流 API 測試環境（測試環境網址）
+      fetch("https://sandbox.ecpay.com.tw/Payment/Checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -92,11 +85,11 @@
       .then(response => response.json())
       .then(data => {
         console.log("API回應:", data); // 檢查回應數據
-        // 根據 API 回應做相應處理
-        if (data.Status === "OK") {
+        if (data.Status && data.Status === "OK") {
           alert("付款成功！");
         } else {
-          alert("付款失敗，請再試一次！");
+          console.error("API錯誤:", data); // 查看具體的錯誤訊息
+          alert("付款失敗，請檢查您的資料！");
         }
       })
       .catch(error => {
