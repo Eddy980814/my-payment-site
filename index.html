@@ -34,6 +34,9 @@
       <label for="amount">金額：</label>
       <input type="number" id="amount" name="amount" required /><br />
       
+      <label for="productName">商品名稱：</label>
+      <input type="text" id="productName" name="productName" required placeholder="請輸入商品名稱" /><br />
+
       <label for="paymentMethod">選擇付款方式：</label>
       <select id="paymentMethod" name="paymentMethod">
         <option value="credit_card">信用卡付款</option>
@@ -47,9 +50,65 @@
   <script>
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      // 這裡會呼叫你的付款 API（目前為假設的步驟）
-      alert('付款資訊已送出');
+
+      // 获取表单数据
+      var name = document.getElementById('name').value;
+      var phone = document.getElementById('phone').value;
+      var amount = document.getElementById('amount').value;
+      var productName = document.getElementById('productName').value;
+      var paymentMethod = document.getElementById('paymentMethod').value;
+
+      // 設定綠界金流的測試環境 API 參數
+      var merchantID = "3385709"; // 測試商店代號
+      var hashKey = "M2eixosZGgDsvKs6"; // 測試 HashKey
+      var hashIV = "PmvnnKAnisf7Gtv8"; // 測試 HashIV
+
+      // 計算檢查碼
+      var tradeDate = new Date().toISOString().slice(0, 19).replace("T", ""); // 當前時間
+      var orderNo = "test_" + tradeDate + Math.floor(Math.random() * 10000); // 假設生成訂單編號
+
+      var params = {
+        MerchantID: merchantID,
+        Amt: amount,
+        Name: name,
+        Phone: phone,
+        ProductName: productName,
+        PaymentMethod: paymentMethod,
+        TradeDate: tradeDate,
+        OrderNo: orderNo,
+        HashKey: hashKey,
+        HashIV: hashIV,
+        ServiceURL: "https://www.ecpay.com.tw",
+        ReturnURL: "https://www.yourwebsite.com/return",  // 設定回傳的URL
+        ClientBackURL: "https://www.yourwebsite.com/thanks"  // 付款成功後返回頁面
+      };
+
+      // 拼接資料並加密
+      var urlParams = new URLSearchParams(params);
+      var encryptedData = encryptData(urlParams.toString(), hashKey, hashIV);
+
+      // 發送付款請求
+      fetch("https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: encryptedData
+      })
+      .then(response => response.text())
+      .then(result => {
+        console.log("付款成功:", result);
+        // 根據結果，可能需要處理跳轉或顯示付款結果
+      })
+      .catch(error => {
+        console.error("錯誤:", error);
+      });
     });
+
+    function encryptData(data, key, iv) {
+      // 用你的方式進行加密，這是範例。你需要自己實現加密邏輯。
+      return data;
+    }
   </script>
 </body>
 </html>
